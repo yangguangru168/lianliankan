@@ -23,9 +23,9 @@ public class MainPanel extends JPanel implements Runnable{
     //
    // GameModelImpl gameImpl = new GameModelImpl();
     //AbstractGameNode gameImpl = new AbstractGameNode();
-    AbstractGameTwoNode gameImpl = new AbstractGameTwoNode();
+     AbstractGameTwoNode gameImpl = new AbstractGameTwoNode();
     //折点
-    Node turnPoint[];
+    Point point[];
     //表示状态
     public int screenState=1;
     public final static int SCREEN_STATE_PLAY = 1;//运行时
@@ -84,12 +84,10 @@ public class MainPanel extends JPanel implements Runnable{
         //白色区域
         bGraphics.setColor(Color.LIGHT_GRAY);
         bGraphics.fillRect(0,0,700,650);
-        //时间条
-        bGraphics.setColor(Color.white);
-        bGraphics.fillRoundRect(49,5,394,20,14,14);
+
 
         bGraphics.setColor(Color.green);
-        bGraphics.fillRoundRect(51,6,timeWR,18,10,10);
+        bGraphics.fillRoundRect(51,1,timeWR,18,10,10);
         //for遍历图片位置
         for (int i = 1; i <9; i++) {//行
             for (int j = 1; j < 9; j++) {//列
@@ -114,18 +112,25 @@ public class MainPanel extends JPanel implements Runnable{
                 bGraphics.setColor(Color.RED );
                 if (code == 1) {
                     bGraphics.drawLine(selectAJ*cellWith+cellWith/2,selectAI*cellHeight+cellHeight/2,selectBJ*cellWith+cellWith/2,selectBI*cellHeight+cellHeight/2);
-                }else if(code==2){
-                    turnPoint = gameImpl.turingPoints;
-                    Node node = turnPoint[0];
-                    bGraphics.drawLine(selectAJ*cellWith+cellWith/2,selectAI*cellHeight+cellHeight/2,node.getJ()*cellWith+cellWith/2,node.getI()*cellHeight+cellHeight/2);
-                    bGraphics.drawLine(selectBJ*cellWith+cellWith/2,selectBI*cellHeight+cellHeight/2,node.getJ()*cellWith+cellWith/2,node.getI()*cellHeight+cellHeight/2);
-                }else if (code == 3){
-                    turnPoint = gameImpl.turingPoints;
-                    Node nNode = turnPoint[0];
-                    Node tNode = turnPoint[1];
-                    bGraphics.drawLine(selectAJ*cellWith+cellWith/2,selectAI*cellHeight+cellHeight/2,tNode.getJ()*cellWith+cellWith/2,tNode.getI()*cellHeight+cellHeight/2);
-                    bGraphics.drawLine(selectBJ*cellWith+cellWith/2,selectBI*cellHeight+cellHeight/2,nNode.getJ()*cellWith+cellWith/2,nNode.getI()*cellHeight+cellHeight/2);
-                    bGraphics.drawLine(tNode.getJ()*cellWith+cellWith/2,tNode.getI()*cellHeight+cellHeight/2,nNode.getJ()*cellWith+cellWith/2,nNode.getI()*cellHeight+cellHeight/2);
+                }
+                if(code==2){
+                    point = gameImpl.points;
+                    Point node = point[0];
+                    bGraphics.drawLine(selectAJ*cellWith+cellWith/2,selectAI*cellHeight+cellHeight/2,node.getY()*cellWith+cellWith/2,node.getX()*cellHeight+cellHeight/2);
+                    bGraphics.drawLine(selectBJ*cellWith+cellWith/2,selectBI*cellHeight+cellHeight/2,node.getY()*cellWith+cellWith/2,node.getX()*cellHeight+cellHeight/2);
+                }
+                if (code == 3){
+                    point = gameImpl.points;
+                    Point nNode = point[0];
+                    Point tNode = point[1];
+                    System.out.println("nNode: "+nNode.toString());
+                    System.out.println("tNode: "+tNode.toString());
+                    bGraphics.drawLine(selectAJ*cellWith+cellWith/2,selectAI*cellHeight+cellHeight/2,
+                            tNode.getY()*cellWith+cellWith/2,tNode.getX()*cellHeight+cellHeight/2);
+                    bGraphics.drawLine(selectBJ*cellWith+cellWith/2,selectBI*cellHeight+cellHeight/2,
+                            nNode.getY()*cellWith+cellWith/2,nNode.getX()*cellHeight+cellHeight/2);
+                    bGraphics.drawLine(tNode.getY()*cellWith+cellWith/2,tNode.getX()*cellHeight+cellHeight/2,
+                            nNode.getY()*cellWith+cellWith/2,nNode.getX()*cellHeight+cellHeight/2);
 
                 }
                 break;
@@ -149,7 +154,6 @@ public class MainPanel extends JPanel implements Runnable{
     }
     //鼠标放上去方法
     public void pannelMous(MouseEvent e){
-        System.out.println("getX()："+e.getX()+" , getY():"+e.getY());
         int x = e.getX();
         int y = e.getY();
         int i = y/43;
@@ -157,7 +161,6 @@ public class MainPanel extends JPanel implements Runnable{
         if (i>0&&i<9&&j>0&&j<=9) {//鼠标位置在图标上
             mouseI=i;
             mouseJ=j;
-            System.out.println(i+"..."+j);
         }
     }
     //鼠标点击
@@ -170,7 +173,7 @@ public class MainPanel extends JPanel implements Runnable{
             if(i > 0 && i< 9 && j > 0 && j < 9){
                  switch (screenState){//判断游戏当前所处的状态
                      case SCREEN_STATE_PLAY://游戏在进行还有任何图片被选中
-                         if (map[i][j]!=0){//判断当前位置是有图标的，
+                         if (map[i][j]!=0){
                              selectAI = i;
                              selectAJ = j;
                              screenState = SCREEN_STATE_SELECT_ONE;
@@ -248,13 +251,13 @@ public class MainPanel extends JPanel implements Runnable{
                     screenState = SCREEN_STATE_PLAY;
                 }
                 if (GameView.rollScore().equals("3200")) {
-                    screenState = SCREEN_STATE_SUCCESS;
-                    GameView.inti();
+                    GameView.level();
+                    GameView.init();
                     reset();
                     timeWR = 390;
                     repaint();
                 }
-                Thread.sleep(120);
+                Thread.sleep(105);
                 repaint();
             } catch (InterruptedException e) {
                 e.printStackTrace();
