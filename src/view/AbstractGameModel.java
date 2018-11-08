@@ -119,7 +119,7 @@ public abstract class AbstractGameModel {
         return dis;
     }
 
-    //两点折现的距离
+    //两点折现的距离 //git
     public int distance2(int AX, int AY, int BX, int BY) {
         Point point = linkByOneTurn1(AX, AY, BX, BY);
         return distance1(AX, AY, point.getX(), point.getY())
